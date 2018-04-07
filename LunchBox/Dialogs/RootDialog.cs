@@ -61,6 +61,7 @@ namespace LunchBox.Dialogs
             {
                 await context.PostAsync("OK. Well... I guess we can talk about it later.");
             }
+
             context.Wait(this.MessageReceivedAsync);
         }
     }
