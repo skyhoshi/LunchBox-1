@@ -19,20 +19,6 @@ namespace LunchBox
         [Prompt("Do you have anything else to add?")]
         public string Comments;
 
-        private static string[] _negativeResponses = new[]
-        {
-            "no",
-            "nope",
-            "nay",
-            "nada",
-            "nothing",
-            "no response",
-            "no comment",
-            "n/a",
-            "I don't",
-            "I do not"
-        };
-
         public static IForm<Feedback> BuildForm()
         {
             return new FormBuilder<Feedback>()
@@ -45,7 +31,7 @@ namespace LunchBox
                     var comment = (string)value;
                     // The bot framework already handles a bunch of negative response and leaves the "value" null.
                     // This catches more of those.
-                    if (!string.IsNullOrEmpty(comment) && _negativeResponses.Contains(comment.ToLower()))
+                    if (!string.IsNullOrEmpty(comment) && Responses.NegativeResponses.Contains(comment.ToLower()))
                     {
                         // Then make the comment blank
                         return new ValidateResult { IsValid = true, Value = null };

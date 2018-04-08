@@ -26,11 +26,9 @@ namespace LunchBox.Dialogs
                 return;
             }
 
-            //context.ConversationData.SetValue("cats", "dogs")
-
             if (activity.Text.ToLower().Contains("hungry"))
             {
-                await context.PostAsync("You're hungry? Ok, I can help you with that. Who is going to lunch with you?");
+                await context.Forward(new HungryDialog(), RecommendationReceived, activity);
             }
             else if (activity.Text.ToLower().Contains("feedback"))
             {
@@ -41,6 +39,21 @@ namespace LunchBox.Dialogs
                 await context.PostAsync("Hey there! Let me know if you end up getting hungry.");
                 context.Wait(MessageReceivedAsync);
             }
+        }
+
+        private async Task RecommendationReceived(IDialogContext context, IAwaitable<Recommendation> result)
+        {
+            var recommendation = await result;
+            if (recommendation != null)
+            {
+                await context.PostAsync("I'll check back after lunch to see how everything went.");
+            }
+            else
+            {
+                await context.PostAsync("That didn't go as planned. Let me know if your plans change and you want to get some lunch.");
+            }
+
+            context.Wait(MessageReceivedAsync);
         }
 
         private async Task ResumeAfterFeedback(IDialogContext context, IAwaitable<Feedback> result)
