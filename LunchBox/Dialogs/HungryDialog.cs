@@ -1,6 +1,7 @@
 ﻿using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,7 +23,6 @@ namespace LunchBox.Dialogs
             Criteria criteria;
             if (!context.PrivateConversationData.TryGetValue("criteria", out criteria))
             {
-                // Then this was the first question asked. This is who is going to lunch
                 criteria = new Criteria();
                 context.PrivateConversationData.SetValue("criteria", criteria);
             }
@@ -30,13 +30,16 @@ namespace LunchBox.Dialogs
             await AskNextQuestion(criteria, context, activity.Text);
         }
 
-        private static void CheckForCancel(IDialogContext context, string message)
+        private static bool CheckForCancel(IDialogContext context, string message)
         {
             if (Responses.CancelResponses.Contains(message))
             {
                 // The user wants to cancel, so let's complete this dialog
                 context.Done((Recommendation)null);
+                return true;
             }
+
+            return false;
         }
 
         private Recommendation DetermineTheBestPlaceToGoToLunch(Criteria criteria)
@@ -48,8 +51,6 @@ namespace LunchBox.Dialogs
         // Asks a question and lets the calling code know if this code ended up asking a question by returning true.
         private async Task AskNextQuestion(Criteria criteria, IDialogContext context, string currentMessage)
         {
-            CheckForCancel(context, currentMessage);
-
             if (criteria.Attendees == null || !criteria.Attendees.Any())
             {
                 await context.PostAsync("Who is going to lunch with you?");
@@ -57,7 +58,26 @@ namespace LunchBox.Dialogs
             }
             else if (!criteria.HasTimeRestrictions.HasValue)
             {
-                await context.PostAsync("Do you have any time restrictions?");
+                var nextMessage = context.MakeMessage();
+                nextMessage.Text = "Do you have any time restrictions?";
+                nextMessage.Type = ActivityTypes.Message;
+                nextMessage.SuggestedActions = new SuggestedActions
+                {
+                    Actions = new List<CardAction>
+                    {
+                        new CardAction() {
+                            Type = ActionTypes.ImBack,
+                            Title = "Yes",
+                            Value = "Yes"
+                        },
+                        new CardAction() {
+                            Type = ActionTypes.ImBack,
+                            Title = "No",
+                            Value = "No"
+                        }
+                    }
+                };
+                await context.PostAsync(nextMessage);
                 context.Wait(TimeRestrictionsResponseReceived);
             }
             else if (criteria.HasTimeRestrictions.GetValueOrDefault() && !criteria.LunchDuration.HasValue)
@@ -76,6 +96,9 @@ namespace LunchBox.Dialogs
         private async Task LunchDurationResponseReceived(IDialogContext context, IAwaitable<object> result)
         {
             var response = await result as Activity;
+            if (CheckForCancel(context, response.Text))
+                return;
+
             var criteria = context.PrivateConversationData.GetValue<Criteria>("criteria");
 
             // For now, just accept the number of minutes
@@ -96,6 +119,9 @@ namespace LunchBox.Dialogs
         private async Task TimeRestrictionsResponseReceived(IDialogContext context, IAwaitable<object> result)
         {
             var response = await result as Activity;
+            if (CheckForCancel(context, response.Text))
+                return;
+
             var criteria = context.PrivateConversationData.GetValue<Criteria>("criteria");
 
             criteria.HasTimeRestrictions = !Responses.NegativeResponses.Contains(response.Text);
@@ -107,6 +133,9 @@ namespace LunchBox.Dialogs
         private async Task AttendeesResponseReceived(IDialogContext context, IAwaitable<object> result)
         {
             var response = await result as Activity;
+            if (CheckForCancel(context, response.Text))
+                return;
+
             var criteria = context.PrivateConversationData.GetValue<Criteria>("criteria");
 
             criteria.Attendees = response.Text
