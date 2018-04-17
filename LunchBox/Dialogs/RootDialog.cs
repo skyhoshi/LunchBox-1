@@ -36,9 +36,14 @@ namespace LunchBox.Dialogs
             }
             else
             {
-                await context.PostAsync("Hey there! Let me know if you end up getting hungry.");
-                context.Wait(MessageReceivedAsync);
+                await context.Forward(new LuisRecommendationDialog(), LuisRecommendationReceived, activity);
             }
+        }
+
+        private async Task LuisRecommendationReceived(IDialogContext context, IAwaitable<object> result)
+        {
+            var recommendation = await result as Recommendation;
+            await context.PostAsync($"Enjoy your lunch at {recommendation.Location}. I'll check back after lunch to see how everything went.");
         }
 
         private async Task RecommendationReceived(IDialogContext context, IAwaitable<Recommendation> result)

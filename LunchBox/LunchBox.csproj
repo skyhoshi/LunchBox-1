@@ -127,8 +127,11 @@
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Criteria.cs" />
     <Compile Include="Dialogs\HungryDialog.cs" />
+    <Compile Include="Dialogs\LuisRecommendationDialog.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
+    <Compile Include="Entities.cs" />
     <Compile Include="Feedback.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -137,11 +140,15 @@
     <Compile Include="Rating.cs" />
     <Compile Include="Recommendation.cs" />
     <Compile Include="Responses.cs" />
+    <Compile Include="Services\LunchVisit.cs" />
+    <Compile Include="Services\RecommendationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Properties\PublishProfiles\lunchbox-bot - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\lunchbox-bot - Web Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

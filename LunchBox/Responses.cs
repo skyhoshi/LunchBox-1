@@ -29,6 +29,11 @@ namespace LunchBox
             "exit",
             "quit"
         };
-
+        public static string[] PersonalRefences = new[]
+        {
+            "I",
+            "i",
+            "me"
+        };
     }
 }

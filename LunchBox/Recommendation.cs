@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace LunchBox
+﻿namespace LunchBox
 {
-    public class Criteria
-    {
-        public IEnumerable<string> Attendees { get; set; }
-        public bool? HasTimeRestrictions { get; set; }
-        public TimeSpan? LunchDuration { get; set; }
-    }
-
     public class Recommendation
     {
-        
+        public string Location { get; set; }
+        public double Rating { get; set; }
     }
 }
