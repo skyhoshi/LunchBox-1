@@ -140,7 +140,8 @@
     <Compile Include="Rating.cs" />
     <Compile Include="Recommendation.cs" />
     <Compile Include="Responses.cs" />
-    <Compile Include="Services\LunchVisit.cs" />
+    <Compile Include="Location.cs" />
+    <Compile Include="LunchVisit.cs" />
     <Compile Include="Services\RecommendationService.cs" />
   </ItemGroup>
   <ItemGroup>

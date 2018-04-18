@@ -1,4 +1,4 @@
-﻿namespace LunchBox.Services
+﻿namespace LunchBox
 {
     public class LunchVisit
     {

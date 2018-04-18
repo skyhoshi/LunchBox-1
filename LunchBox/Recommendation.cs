@@ -2,7 +2,7 @@
 {
     public class Recommendation
     {
-        public string Location { get; set; }
+        public Location Location { get; set; }
         public double Rating { get; set; }
     }
 }

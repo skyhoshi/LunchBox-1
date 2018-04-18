@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
@@ -43,7 +44,30 @@ namespace LunchBox.Dialogs
         private async Task LuisRecommendationReceived(IDialogContext context, IAwaitable<object> result)
         {
             var recommendation = await result as Recommendation;
-            await context.PostAsync($"Enjoy your lunch at {recommendation.Location}. I'll check back after lunch to see how everything went.");
+
+            var message = context.MakeMessage();
+            message.Text = "I have a recommendation for you.";
+
+            var buttons = new List<CardAction>()
+            {
+                new CardAction() { Title = "More Info", Type = ActionTypes.OpenUrl, Value= recommendation.Location.Website }
+            };
+
+            var images = new List<CardImage>
+            {
+                new CardImage(url: recommendation.Location.ImageUrl)
+            };
+
+            var card = new HeroCard()
+            {
+                Title = recommendation.Location.Name,
+                Images = images,
+                Buttons = buttons,
+                Tap = buttons[0],
+            };
+
+            message.Attachments.Add(card.ToAttachment());
+            await context.PostAsync(message);
         }
 
         private async Task RecommendationReceived(IDialogContext context, IAwaitable<Recommendation> result)
