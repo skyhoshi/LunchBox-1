@@ -20,52 +20,45 @@ namespace LunchBox.Dialogs
         {
         }
 
+        [LuisIntent("None")]
+        [LuisIntent("")]
+        public async Task NoneIntent(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync(@"Hmm, I'm not familiar with that. ¯\_(ツ)_/¯");
+            context.Wait(MessageReceived);
+        }
+
         [LuisIntent("GetRecommendation")]
         public async Task GetRecommendationIntent(IDialogContext context, LuisResult result)
         {
-            Criteria criteria;
-            if (!context.PrivateConversationData.TryGetValue("criteria", out criteria))
-            {
-                criteria = new Criteria();
-                context.PrivateConversationData.SetValue("criteria", criteria);
-            }
+            var criteria = new Criteria();
 
-            var people = new List<string>();
-            var cuisines = new List<string>();
             foreach (var entity in result.Entities)
             {
                 if (entity.Type == Entities.Cuisine)
                 {
-                    cuisines.Add(entity.Entity);
+                    criteria.Cuisines.Add(entity.Entity);
                 }
                 else if (entity.Type == Entities.Person)
                 {
                     if (Responses.PersonalRefences.Contains(entity.Entity))
                     {
-                        people.Add(_currentUser);
+                        criteria.Attendees.Add(_currentUser);
                     }
                     else
                     {
-                        people.Add(entity.Entity);
+                        criteria.Attendees.Add(entity.Entity);
                     }
                 }
             }
-
-            criteria.Attendees = people;
-            criteria.Cuisines = cuisines;
-            criteria.HasTimeRestrictions = false;
-
-            context.PrivateConversationData.SetValue("criteria", criteria);
 
             if (!criteria.HasEnoughForRecommendation)
             {
                 // Redirect to Hungry dialog to fill out the rest of the information
             }
-            else
-            {
-                var recommendation = MakeRecommendation(criteria);
-                context.Done(recommendation);
-            }
+
+            var recommendation = MakeRecommendation(criteria);
+            context.Done(recommendation);
         }
 
         private Recommendation MakeRecommendation(Criteria criteria)

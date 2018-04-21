@@ -6,7 +6,7 @@ namespace LunchBox
 {
     public class Criteria
     {
-        public IEnumerable<string> Attendees { get; set; }
+        public List<string> Attendees { get; set; }
         public bool? HasTimeRestrictions { get; set; }
         public TimeSpan? LunchDuration { get; set; }
         public List<string> Cuisines { get; set; }
@@ -16,6 +16,12 @@ namespace LunchBox
             {
                 return Attendees != null && Attendees.Count() > 0;
             }
+        }
+
+        public Criteria()
+        {
+            Attendees = new List<string>();
+            Cuisines = new List<string>();
         }
     }
 }

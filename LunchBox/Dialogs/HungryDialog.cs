@@ -124,7 +124,7 @@ namespace LunchBox.Dialogs
 
             var criteria = context.PrivateConversationData.GetValue<Criteria>("criteria");
 
-            criteria.HasTimeRestrictions = !Responses.NegativeResponses.Contains(response.Text);
+            criteria.HasTimeRestrictions = !Responses.NegativeResponses.Contains(response.Text.ToLower());
             context.PrivateConversationData.SetValue("criteria", criteria);
 
             await AskNextQuestion(criteria, context, response.Text);
@@ -142,7 +142,8 @@ namespace LunchBox.Dialogs
                .Replace("and", "")
                .Split(new[] { ',', ' ' })
                .Where(p => !string.IsNullOrEmpty(p))
-               .Select(p => p.Trim());
+               .Select(p => p.Trim())
+               .ToList();
 
             context.PrivateConversationData.SetValue("criteria", criteria);
             await AskNextQuestion(criteria, context, response.Text);

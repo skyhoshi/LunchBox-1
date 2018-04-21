@@ -33,7 +33,11 @@ namespace LunchBox
         {
             "I",
             "i",
-            "me"
+            "me",
+            "I'm",
+            "i'm",
+            "im",
+            "Im"
         };
     }
 }
