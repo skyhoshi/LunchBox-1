@@ -28,6 +28,13 @@ namespace LunchBox.Dialogs
             context.Wait(MessageReceived);
         }
 
+        [LuisIntent("Greeting")]
+        public async Task GreetingIntent(IDialogContext context, LuisResult result)
+        {
+            await context.PostAsync(@"Hey! Getting hungry? Let me know a bit about who's going and what you're in the mood for and I'll give you a recommendation.");
+            context.Wait(MessageReceived);
+        }
+
         [LuisIntent("GetRecommendation")]
         public async Task GetRecommendationIntent(IDialogContext context, LuisResult result)
         {
