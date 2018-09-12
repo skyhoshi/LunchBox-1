@@ -70,15 +70,6 @@ namespace LunchBox.Dialogs
             await context.PostAsync(message);
 
             await context.PostAsync("I'll check back after lunch to see how everything went.");
-
-            await EndConversation(context);
-        }
-
-        private async Task EndConversation(IDialogContext context)
-        {
-            var message = context.MakeMessage();
-            message.Type = ActivityTypes.EndOfConversation;
-            await context.PostAsync(message);
         }
 
         private async Task RecommendationReceived(IDialogContext context, IAwaitable<Recommendation> result)
