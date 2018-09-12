@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.FormFlow;
 using Microsoft.Bot.Connector;
+using Microsoft.Bot.Connector.Teams;
 
 namespace LunchBox.Dialogs
 {
@@ -37,6 +38,14 @@ namespace LunchBox.Dialogs
             }
             else
             {
+                if (activity.ChannelId.ToLower() == "msteams")
+                {
+                    Activity replyActivity = activity.CreateReply();
+                    replyActivity.Text = "Oh hey there ";
+                    replyActivity.AddMentionToText(activity.From, MentionTextLocation.AppendText);
+                    await context.PostAsync(replyActivity);
+                }
+
                 await context.Forward(new LuisRecommendationDialog(), LuisRecommendationReceived, activity);
             }
         }
