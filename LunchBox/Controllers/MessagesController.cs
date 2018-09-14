@@ -7,7 +7,6 @@ using Microsoft.Bot.Connector;
 
 namespace LunchBox
 {
-    [BotAuthentication]
     public class MessagesController : ApiController
     {
         /// <summary>

@@ -28,6 +28,14 @@ namespace LunchBox.Dialogs
                 return;
             }
 
+            if (activity.ChannelId.ToLower() == "msteams")
+            {
+                Activity replyActivity = activity.CreateReply();
+                replyActivity.Text = "Oh hey there ";
+                replyActivity.AddMentionToText(activity.From, MentionTextLocation.AppendText);
+                await context.PostAsync(replyActivity);
+            }
+
             if (activity.Text.ToLower().Contains("hungry"))
             {
                 await context.Forward(new HungryDialog(), RecommendationReceived, activity);
@@ -38,14 +46,6 @@ namespace LunchBox.Dialogs
             }
             else
             {
-                if (activity.ChannelId.ToLower() == "msteams")
-                {
-                    Activity replyActivity = activity.CreateReply();
-                    replyActivity.Text = "Oh hey there ";
-                    replyActivity.AddMentionToText(activity.From, MentionTextLocation.AppendText);
-                    await context.PostAsync(replyActivity);
-                }
-
                 await context.Forward(new LuisRecommendationDialog(), LuisRecommendationReceived, activity);
             }
         }
